@@ -3,6 +3,7 @@ import featuretools as ft
 import sys
 import click
 import os
+import pandas as pd
 
 
 def save_demo_data(es, file_list):
@@ -26,15 +27,40 @@ def download_data():
                 break
 
 
+def demo_load_csv_to_df():
+    print('traverse_subdir==True')
+    dt.load_csv_to_df('data', traverse_subdir=True)
+    print('')
+
+    print('traverse_subdir==False')
+    dt.load_csv_to_df('data', traverse_subdir=False)
+
+    return None
+
+
+def demo_find_related_cols_by_content():
+    # Important note - these hard-coded paths will work only on Linux or Mac
+    # For a PC, path would be 'data\\airlines\\airlines.csv'
+    dataframe_dict = {'airlines': pd.read_csv('data/airlines/airlines.csv'),
+                      'flights': pd.read_csv('data/flights/flights.csv')}
+
+    print(dt.find_related_cols_by_content(dataframe_dict))
+
+
 # demonstration - this will be removed later
 if __name__ == "__main__":
     print(sys.version)
     print(sys.executable)
 
-    # Download example data (if it doesn't exist)
-    download_data()
+    print('--- demo_load_csv_to_df() ---')
+    demo_load_csv_to_df()
+    print('---')
 
-    print(dt.load_csv_to_df(None))
+    print('--- demo_find_related_cols_by_content() ---')
+    demo_find_related_cols_by_content()
+    print('---')
+
+    exit(1)
 
     relationship_dict = dt.get_dataset_dtypes(None)
     print(relationship_dict)
