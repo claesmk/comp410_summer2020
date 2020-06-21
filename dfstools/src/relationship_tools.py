@@ -45,7 +45,9 @@ def find_similar_data(current_table, current_col, dataframe_dict):
 def find_related_cols_by_content(dataframe_list, relationship_dict=None):
     # dataframe_list
     #     List of pandas dataframe objects
-    #
+    if dataframe_list is None:
+        return relationship_dict
+
     # relationship_dict
     #     This is an existing relationship_dict.  If None, a new
     #     relationship_dict should be created

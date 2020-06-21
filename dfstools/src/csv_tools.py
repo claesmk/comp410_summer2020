@@ -30,15 +30,16 @@ def load_csv_to_df(path, include_hidden=False, traverse_subdir=True, follow_syml
     # file_list = find_csv_files(path, include_hidden, traverse_subdir, follow_symlink)
     # return dataframes_from_file_list(file_list, ignore_errors)
 
-    if not traverse_subdir:
-        for name in os.listdir(path):
-            if name.endswith('.csv'):
-                print(name)
-    else:
-        for dirpath, dirnames, files in os.walk(path):
-            for name in files:
+    if path is not None:
+        if not traverse_subdir:
+            for name in os.listdir(path):
                 if name.endswith('.csv'):
-                    print(os.path.join(dirpath, name))
+                    print(name)
+        else:
+            for dirpath, dirnames, files in os.walk(path):
+                for name in files:
+                    if name.endswith('.csv'):
+                        print(os.path.join(dirpath, name))
 
     ###
     # Student code (create additional functions as necessary)
