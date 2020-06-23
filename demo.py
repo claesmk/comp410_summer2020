@@ -47,6 +47,34 @@ def demo_find_related_cols_by_content():
     print(dt.find_related_cols_by_content(dataframe_dict))
 
 
+# import pandas as pd
+def demo_pandas():
+    # Important note - these hard-coded paths will work only on Linux or Mac
+    # For a PC, path would be 'data\\airlines\\airlines.csv'
+    # This is the format that
+    dataframe_dict = {'airlines': pd.read_csv('data/airlines/airlines.csv'),
+                      'flights': pd.read_csv('data/flights/flights.csv')}
+
+    # Initialize relationships
+    relationships_dict = {}
+
+    for table in dataframe_dict:
+        # Initialize relationships for this table
+        relationships_dict[table] = {}
+
+        print('table name', end=': ')
+        print(table)
+        print('columns')
+        print(dataframe_dict[table].columns)
+
+        for col in dataframe_dict[table].columns:
+            dtype_str = str(dataframe_dict[table][col].dtype)
+            relationships_dict[table][col] = {'dtype': dtype_str}
+
+    print('relationships')
+    print(relationships_dict)
+
+
 # demonstration - this will be removed later
 if __name__ == "__main__":
     print(sys.version)
@@ -58,6 +86,10 @@ if __name__ == "__main__":
 
     print('--- demo_find_related_cols_by_content() ---')
     demo_find_related_cols_by_content()
+    print('---')
+
+    print('--- demo pandas ---')
+    demo_pandas()
     print('---')
 
     exit(1)
