@@ -4,6 +4,14 @@ from dfstools import find_primary_key_candidates
 
 
 class DataTools(unittest.TestCase):
+    def test_get_dataset_dtypes(self):
+        expected = {'airlines': {'carrier': {'dtype': 'O'}},
+                    'airports': {'dest': {'dtype': 'O'}},
+                    'flights': {'dest': {'dtype': 'O'}, 'carrier': {'dtype': 'O'},'flight_id': {'dtype': 'O'}},
+                    'trip_logs': {'flight_id': {'dtype': 'O'}}}
+        result = get_dataset_dtypes(None)
+        self.assertEqual(expected, result)
+
     def test_find_primary_key_candidates(self):
 
         # Get initial relationships_dict

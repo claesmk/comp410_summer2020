@@ -4,6 +4,9 @@ import sys
 import click
 import os
 import pandas as pd
+import pprint
+
+pp = pprint.PrettyPrinter(width=41, compact=True)
 
 
 def save_demo_data(es, file_list):
@@ -29,13 +32,24 @@ def download_data():
 
 def demo_load_csv_to_df():
     print('traverse_subdir==True')
-    dt.load_csv_to_df('data', traverse_subdir=True)
+    print(dt.load_csv_to_df('data', traverse_subdir=True, ignore_errors=True))
     print('')
 
     print('traverse_subdir==False')
-    dt.load_csv_to_df('data', traverse_subdir=False)
+    print(dt.load_csv_to_df('data', traverse_subdir=False, ignore_errors=True))
 
     return None
+
+
+def demo_find_related_cols_by_name():
+    # Important note - these hard-coded paths will work only on Linux or Mac
+    # For a PC, path would be 'data\\airlines\\airlines.csv'
+    dataframe_dict = {'airlines': pd.read_csv('data/airlines/airlines.csv'),
+                      'flights': pd.read_csv('data/flights/flights.csv'),
+                      'airports': pd.read_csv('data/airports/airports.csv'),
+                      'trip_logs': pd.read_csv('data/trip_logs/trip_logs.csv')}
+
+    pp.pprint(dt.find_related_cols_by_name(dataframe_dict))
 
 
 def demo_find_related_cols_by_content():
@@ -44,7 +58,7 @@ def demo_find_related_cols_by_content():
     dataframe_dict = {'airlines': pd.read_csv('data/airlines/airlines.csv'),
                       'flights': pd.read_csv('data/flights/flights.csv')}
 
-    print(dt.find_related_cols_by_content(dataframe_dict))
+    pp.pprint(dt.find_related_cols_by_content(dataframe_dict))
 
 
 # import pandas as pd
@@ -53,7 +67,8 @@ def demo_pandas():
     # For a PC, path would be 'data\\airlines\\airlines.csv'
     # This is the format that
     dataframe_dict = {'airlines': pd.read_csv('data/airlines/airlines.csv'),
-                      'flights': pd.read_csv('data/flights/flights.csv')}
+                      'flights': pd.read_csv('data/flights/flights.csv'),
+                      'airports': pd.read_csv('data/airports/airports.csv')}
 
     # Initialize relationships
     relationships_dict = {}
@@ -84,6 +99,10 @@ if __name__ == "__main__":
     demo_load_csv_to_df()
     print('---')
 
+    print('--- demo_find_related_cols_by_name() ---')
+    demo_find_related_cols_by_name()
+    print('---')
+
     print('--- demo_find_related_cols_by_content() ---')
     demo_find_related_cols_by_content()
     print('---')
@@ -92,15 +111,12 @@ if __name__ == "__main__":
     demo_pandas()
     print('---')
 
-    exit(1)
+    print('other demo functions')
 
     relationship_dict = dt.get_dataset_dtypes(None)
     print(relationship_dict)
 
     relationship_dict = dt.find_primary_key_candidates(None, relationship_dict)
-    print(relationship_dict)
-
-    relationship_dict = dt.find_related_cols_by_name(None, relationship_dict)
     print(relationship_dict)
 
     relationship_dict = dt.find_parent_child_relationships(None, relationship_dict)
