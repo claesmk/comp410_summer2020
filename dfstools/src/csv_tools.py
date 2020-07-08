@@ -20,7 +20,7 @@ def find_csv_files(path, include_hidden, traverse_subdir, follow_symlink):
                 for name in files:
                     if name.startswith('.'):
                         print(name + ' is hidden!')
-                    if name.endswith('.csv'):
+                    elif name.endswith('.csv'):
                         file_list.append(os.path.join(dirpath, name))
     return file_list
 

@@ -3,6 +3,8 @@ import pandas as pd
 import os
 import git
 from dfstools import load_csv_to_df
+from dfstools import get_dataset_dtypes
+from dfstools import find_primary_key_candidates
 from dfstools import find_related_cols_by_name
 from dfstools import find_related_cols_by_content
 from dfstools import find_parent_child_relationships
@@ -107,23 +109,38 @@ class DataTools(unittest.TestCase):
         self.assertEqual(result, expected)
 
     def test_find_parent_child_relationships(self):
-        expected = {'airlines': {'carrier': {'relationships': [{'flights.carrier': {}}]}},
-                    'airports': {'dest': {'relationships': [{'flights.dest': {}}]},
-                                 'dest_city': {'relationships': []},
-                                 'dest_state': {'relationships': []}},
-                    'flights': {'carrier': {'relationships': [{'airlines.carrier': {}}]},
-                                'dest': {'relationships': [{'airports.dest': {}}]},
-                                'distance_group': {'relationships': []},
-                                'first_trip_logs_time': {'relationships': []},
-                                'flight_id': {'relationships': [{'trip_logs.flight_id': {}}]},
-                                'flight_num': {'relationships': []},
-                                'origin': {'relationships': []},
-                                'origin_city': {'relationships': []},
-                                'origin_state': {'relationships': []}},
-                    'trip_logs': {'flight_id': {'relationships': []}}}
+        dataframe_list = ['airlines', 'airports', 'flights', 'trip_logs']
 
-        result = find_parent_child_relationships(None, expected)
-        self.assertEqual(result, expected)
+        expected = {'airlines': {'carrier': {'dtype': 'O',
+                                             'key_candidate': True,
+                                             'relationships': [{'flights.carrier': {'type': 'Parent'}}]}},
+                    'airports': {'dest': {'dtype': 'O',
+                                          'key_candidate': True,
+                                          'relationships': [{'flights.dest': {'type': 'Parent'}}]}},
+                    'flights': {'carrier': {'dtype': 'O',
+                                            'key_candidate': False,
+                                            'relationships': [{'airlines.carrier': {'type': 'Child'}}]},
+                                'dest': {'dtype': 'O',
+                                         'key_candidate': False,
+                                         'relationships': [{'airports.dest': {'type': 'Child'}}]},
+                                'flight_id': {'dtype': 'O',
+                                              'key_candidate': True,
+                                              'relationships': [{'trip_logs.flight_id': {'type': 'Parent'}}]}},
+                    'trip_logs': {'flight_id': {'dtype': 'O',
+                                                'key_candidate': False,
+                                                'relationships': [{'flights.flight_id': {'type': 'Child'}}]}}}
+
+        # Get the data types of each object in each dataframe
+        relationship_dict = get_dataset_dtypes(dataframe_list)
+
+        # Identify primary key candidates
+        relationship_dict = find_primary_key_candidates(dataframe_list, relationship_dict)
+
+        # Identify relationships by column name
+        relationship_dict = find_related_cols_by_name(dataframe_list, relationship_dict)
+
+        relationship_dict = find_parent_child_relationships(dataframe_list, relationship_dict)
+        self.assertEqual(relationship_dict, expected)
 
 
 if __name__ == '__main__':

@@ -61,6 +61,30 @@ def demo_find_related_cols_by_content():
     pp.pprint(dt.find_related_cols_by_content(dataframe_dict))
 
 
+def demo_find_parent_child_relationships():
+    # Create a mock-up dataframe list
+    dataframe_list = ['airlines', 'airports', 'flights', 'trip_logs']
+
+    # Get the data types of each object in each dataframe
+    relationship_dict = dt.get_dataset_dtypes(dataframe_list)
+
+    # Identify primary key candidates
+    relationship_dict = dt.find_primary_key_candidates(dataframe_list, relationship_dict)
+
+    # Identify relationships by column name
+    relationship_dict = dt.find_related_cols_by_name(dataframe_list, relationship_dict)
+
+    relationship_dict = dt.find_parent_child_relationships(dataframe_list, relationship_dict)
+    pp.pprint(relationship_dict)
+
+    # dataframe_dict = dt.load_csv_to_df('data', ignore_errors=True)
+    #
+    # relationship_dict = dt.find_related_cols_by_name(dataframe_dict, None)
+    #
+    # relationship_dict = dt.find_parent_child_relationships(dataframe_dict, relationship_dict)
+    # pp.pprint(relationship_dict)
+
+
 # import pandas as pd
 def demo_pandas():
     # Important note - these hard-coded paths will work only on Linux or Mac
@@ -90,8 +114,7 @@ def demo_pandas():
     print(relationships_dict)
 
 
-# demonstration - this will be removed later
-if __name__ == "__main__":
+def run_demo():
     print(sys.version)
     print(sys.executable)
 
@@ -107,17 +130,26 @@ if __name__ == "__main__":
     demo_find_related_cols_by_content()
     print('---')
 
+    print('--- demo_find_parent_child_relationships ---')
+    demo_find_parent_child_relationships()
+    print('---')
+
     print('--- demo pandas ---')
     demo_pandas()
     print('---')
 
-    print('other demo functions')
+    # print('other demo functions')
+    #
+    # relationship_dict = dt.get_dataset_dtypes(None)
+    # print(relationship_dict)
+    #
+    # relationship_dict = dt.find_primary_key_candidates(None, relationship_dict)
+    # print(relationship_dict)
+    #
+    # relationship_dict = dt.find_parent_child_relationships(None, relationship_dict)
+    # print(relationship_dict)
 
-    relationship_dict = dt.get_dataset_dtypes(None)
-    print(relationship_dict)
 
-    relationship_dict = dt.find_primary_key_candidates(None, relationship_dict)
-    print(relationship_dict)
-
-    relationship_dict = dt.find_parent_child_relationships(None, relationship_dict)
-    print(relationship_dict)
+# demonstration - this will be removed later
+if __name__ == "__main__":
+    run_demo()

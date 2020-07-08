@@ -7,6 +7,16 @@ def find_related_cols_by_name(dataframe_list, relationship_dict=None):
     if dataframe_list is None:
         return relationship_dict
 
+    if relationship_dict is not None:
+        relationship_dict['airlines']['carrier']['relationships'] = [{'flights.carrier': {}}]
+        relationship_dict['airports']['dest']['relationships'] = [{'flights.dest': {}}]
+        relationship_dict['flights']['dest']['relationships'] = [{'airports.dest': {}}]
+        relationship_dict['flights']['carrier']['relationships'] = [{'airlines.carrier': {}}]
+        relationship_dict['flights']['flight_id']['relationships'] = [{'trip_logs.flight_id': {}}]
+        relationship_dict['trip_logs']['flight_id']['relationships'] = [{'flights.flight_id': {}}]
+
+        return relationship_dict
+
     # relationship_dict
     #     This is an existing relationship_dict.  If None, a new
     #     relationship_dict should be created
@@ -96,6 +106,33 @@ def find_related_cols_by_content(dataframe_list, relationship_dict=None):
 
 
 def find_parent_child_relationships(dataframe_list, relationship_dict, hints=None):
+    for table in relationship_dict:
+        print(table)
+        for col in relationship_dict[table]:
+            print(col)
+            if relationship_dict[table][col]['key_candidate'] is True:
+                print('Found a primary key candidate')
+                for relationship in relationship_dict[table][col]['relationships']:
+                    for table_column_name in relationship:
+                        relationship[table_column_name]['type'] = 'Parent'
+            else:
+                for relationship in relationship_dict[table][col]['relationships']:
+                    for table_column_name in relationship:
+                        relationship[table_column_name]['type'] = 'Child'
+
+
+
+
+
+
+
+
+    if dataframe_list is None:
+        return relationship_dict
+
+    if relationship_dict is None:
+        relationship_dict = {}
+
     # dataframe_list
     #     List of pandas dataframe objects
     #
@@ -113,12 +150,12 @@ def find_parent_child_relationships(dataframe_list, relationship_dict, hints=Non
     ###
 
     # mock-up for demonstration - remove after development
-    relationship_dict['airlines']['carrier']['relationships'] = [{'flights.carrier': {'type': 'Parent'}}]
-    relationship_dict['airports']['dest']['relationships'] = [{'flights.dest': {'type': 'Parent'}}]
-    relationship_dict['flights']['dest']['relationships'] = [{'airports.dest': {'type': 'Child'}}]
-    relationship_dict['flights']['carrier']['relationships'] = [{'airlines.carrier': {'type': 'Child'}}]
-    relationship_dict['flights']['flight_id']['relationships'] = [{'trip_logs.flight_id': {'type': 'Parent'}}]
-    relationship_dict['trip_logs']['flight_id']['relationships'] = [{'flights.flight_id': {'type': 'Child'}}]
+    # relationship_dict['airlines']['carrier']['relationships'] = [{'flights.carrier': {'type': 'Parent'}}]
+    # relationship_dict['airports']['dest']['relationships'] = [{'flights.dest': {'type': 'Parent'}}]
+    # relationship_dict['flights']['dest']['relationships'] = [{'airports.dest': {'type': 'Child'}}]
+    # relationship_dict['flights']['carrier']['relationships'] = [{'airlines.carrier': {'type': 'Child'}}]
+    # relationship_dict['flights']['flight_id']['relationships'] = [{'trip_logs.flight_id': {'type': 'Parent'}}]
+    # relationship_dict['trip_logs']['flight_id']['relationships'] = [{'flights.flight_id': {'type': 'Child'}}]
 
     # return relationship structure
     return relationship_dict
