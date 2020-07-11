@@ -115,6 +115,9 @@ def demo_pandas():
 
 
 def run_demo():
+    # Adding some changes here to demonstrate how to revert using git
+    print('Running demo')
+
     print(sys.version)
     print(sys.executable)
 
